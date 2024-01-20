@@ -35,7 +35,6 @@ def delete_product(product_id):
         return jsonify({"message": "Product deleted Successfully"}), 200
     return jsonify({"message": "Product not found"}), 404
     
-
 @app.route('/')
 def hello_word():
     return 'Hello World'
