@@ -22,7 +22,7 @@ def add_product():
         product = Product(name=data["name"], price=data["price"], description=data.get("description", ""))
         db.session.add(product)
         db.session.commit()
-        return jsonify({"message": "Successfully"}), 200
+        return jsonify({"message": "Successfully"})
     return jsonify({"message": "Invalid product data"}), 400
 
 
@@ -32,7 +32,19 @@ def delete_product(product_id):
     if product:
         db.session.delete(product)
         db.session.commit()
-        return jsonify({"message": "Product deleted Successfully"}), 200
+        return jsonify({"message": "Product deleted Successfully"})
+    return jsonify({"message": "Product not found"}), 404
+
+@app.route('/api/products/<int:product_id>', methods=["GET"])
+def get_product_details(product_id):
+    product = Product.query.get(product_id)
+    if product:
+        return jsonify({
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "description": product.description,  
+        })
     return jsonify({"message": "Product not found"}), 404
     
 @app.route('/')
