@@ -1,11 +1,10 @@
-from flask import Flask, jsonify, request  # do flask importe a classe Flask
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'  # configuração do banco
 
 db = SQLAlchemy(app)  # instancia do banco
-
 
 # apos criar a classe, rodar o comando "flask shell" e criar a tabela com o comando "db.create_all()" e "db.session.commit()" para finalizar o commit
 class Product(db.Model):
@@ -24,7 +23,6 @@ def add_product():
         db.session.commit()
         return jsonify({"message": "Successfully"})
     return jsonify({"message": "Invalid product data"}), 400
-
 
 @app.route('/api/products/delete/<int:product_id>', methods=["DELETE"])
 def delete_product(product_id):
@@ -61,7 +59,24 @@ def update_products(product_id):
         db.session.commit()
     return jsonify({"message": "Product updated Successfully"})
 
-
+@app.route('/api/products', methods=['GET'])
+def get_products():
+    products = Product.query.all()
+    
+    if not products:
+        return jsonify({'message': 'No product found'}), 404
+        
+    list_of_products = []
+    for product in products:
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "description": product.description,  
+        }
+        list_of_products.append(product_data)
+    
+    return list_of_products
     
 @app.route('/')
 def hello_word():
