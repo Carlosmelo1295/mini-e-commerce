@@ -72,7 +72,6 @@ def get_products():
             "id": product.id,
             "name": product.name,
             "price": product.price,
-            "description": product.description,  
         }
         list_of_products.append(product_data)
     
