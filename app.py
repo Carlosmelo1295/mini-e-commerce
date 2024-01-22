@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, login_required
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -40,6 +40,14 @@ class User(db.Model, UserMixin):
 def load_user(user_id):
     return User.query.get(int(user_id))#user id recuperado dos cokies
 
+#Limpa o cokie para deslogar o usuário da session
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Logout Successfully"})
+
+    
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
