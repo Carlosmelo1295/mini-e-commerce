@@ -13,7 +13,31 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text, nullable=True)
 
+# ao criar outra tabela, rodar 
+# >>> db.drop_all()
+# >>> db.create_all()
+# >>> db.session.commit()
+# >>> exit()
 
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(80), nullable=True)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    user = User.query.filter_by(username=data.get("username")).first()
+    
+    if user and data.get("password") == user.password:
+        return jsonify({"message": "Login Successfully"})
+    
+    return jsonify({"message": "Access denied"}), 401
+
+
+    
 @app.route('/api/products/add', methods=["POST"])
 def add_product():
     data = request.json
